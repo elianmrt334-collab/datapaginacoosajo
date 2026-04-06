@@ -3,110 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ingreso de Métricas - Redes Sociales</title>
+    <title>Dashboard Redes - COOSAJO</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --azul: #172e59; --verde: #158e45; --blanco: #ffffff; --fondo: #f0f4f8; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--fondo); margin: 0; padding: 20px; color: #333; display: flex; flex-direction: column; align-items: center; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--fondo); margin: 0; padding: 20px; color: #333; }
         
-        .header { text-align: center; margin-bottom: 20px; }
+        .header { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; position: relative; }
         .logo { max-width: 180px; margin-bottom: 10px; }
-        h1 { color: var(--azul); margin: 0; }
-        p { color: #666; margin-top: 5px; }
-
-        .formulario-card { background: var(--blanco); padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 100%; max-width: 600px; }
+        .btn-volver { position: absolute; left: 0; top: 10px; background: var(--azul); color: white; padding: 10px 15px; text-decoration: none; border-radius: 8px; font-weight: bold; }
         
-        .grupo-form { margin-bottom: 20px; }
-        label.titulo-seccion { display: block; font-weight: bold; margin-bottom: 8px; color: var(--azul); font-size: 0.95rem; border-bottom: 2px solid #e9ecef; padding-bottom: 5px; }
+        .barra-herramientas { background: var(--blanco); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 25px; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
+        .filtro-item { display: flex; align-items: center; gap: 10px; font-size: 1.1rem; font-weight: bold; color: var(--azul); }
+        select { padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 1.1rem; min-width: 120px; font-weight: bold; }
         
-        select, input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box; font-family: inherit; }
-        select:focus, input:focus { outline: none; border-color: var(--verde); box-shadow: 0 0 5px rgba(21, 142, 69, 0.3); }
+        #anio1 { border: 2px solid var(--azul); color: var(--azul); }
+        #anio2 { border: 2px solid var(--verde); color: var(--verde); }
 
-        .botones-container { display: flex; flex-direction: column; gap: 15px; margin-top: 30px; }
-        .btn-guardar { background-color: var(--verde); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-guardar:hover { background-color: #117538; }
-        .btn-guardar:disabled { background-color: #95cfa9; cursor: not-allowed; }
+        .grid-graficas { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        @media (min-width: 900px) { .grid-graficas { grid-template-columns: 1fr 1fr; } }
         
-        .btn-dashboard { background-color: var(--azul); color: white; text-align: center; text-decoration: none; padding: 15px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; transition: 0.3s; }
-        .btn-dashboard:hover { background-color: #102140; }
-
-        #mensaje-exito { display: none; background-color: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold; border: 1px solid #c3e6cb; }
+        .card { background: var(--blanco); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eaeaea; }
+        .card.full-width { grid-column: 1 / -1; }
+        h3 { text-align: center; color: var(--azul); margin-top: 0; font-size: 1.3rem; }
+        .grafica-contenedor { height: 350px; width: 100%; position: relative; }
     </style>
 </head>
 <body>
+
     <div class="header">
+        <a href="ingreso-redes.html" class="btn-volver">← Ingresar Datos</a>
         <img src="logo.png" alt="COOSAJO" class="logo" onerror="this.style.display='none'">
-        <h1>Métricas de Redes Sociales</h1>
-        <p>Ingresa los datos mensuales para el análisis comparativo</p>
+        <h1 style="color: var(--azul);">Comparativa de Redes Sociales</h1>
+        <p style="margin: 0; color: #666;">Selecciona dos años para enfrentar las métricas históricas y actuales</p>
     </div>
 
-    <div class="formulario-card">
-        <div id="mensaje-exito">✅ ¡Métricas guardadas con éxito!</div>
-        <form id="formRedes">
-            <div class="grupo-form" style="display: flex; gap: 15px;">
-                <div style="flex: 1;">
-                    <label class="titulo-seccion">Año:</label>
-                    <select id="anio" required>
-                        <option value="2023">2023</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                        <option value="2026" selected>2026</option>
-                        <option value="2027">2027</option>
-                        <option value="2028">2028</option>
-                        <option value="2029">2029</option>
-                        <option value="2030">2030</option>
-                    </select>
-                </div>
-                <div style="flex: 1;">
-                    <label class="titulo-seccion">Mes:</label>
-                    <select id="mes" required>
-                        <option value="" disabled selected>Elige...</option>
-                        <option value="Enero">Enero</option><option value="Febrero">Febrero</option>
-                        <option value="Marzo">Marzo</option><option value="Abril">Abril</option>
-                        <option value="Mayo">Mayo</option><option value="Junio">Junio</option>
-                        <option value="Julio">Julio</option><option value="Agosto">Agosto</option>
-                        <option value="Septiembre">Septiembre</option><option value="Octubre">Octubre</option>
-                        <option value="Noviembre">Noviembre</option><option value="Diciembre">Diciembre</option>
-                    </select>
-                </div>
-            </div>
+    <div class="barra-herramientas">
+        <div class="filtro-item">
+            <label>🔵 Año A:</label>
+            <select id="anio1">
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025" selected>2025</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+            </select>
+        </div>
+        <div class="filtro-item" style="font-size: 1.5rem; color: #999;">VS</div>
+        <div class="filtro-item">
+            <label>🟢 Año B:</label>
+            <select id="anio2">
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026" selected>2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+            </select>
+        </div>
+    </div>
 
-            <div class="grupo-form" style="display: flex; gap: 15px;">
-                <div style="flex: 1;">
-                    <label class="titulo-seccion">Seguidores:</label>
-                    <input type="number" id="seguidores" required placeholder="Ej. 56000">
-                </div>
-                <div style="flex: 1;">
-                    <label class="titulo-seccion">Publicaciones:</label>
-                    <input type="number" id="publicaciones" required placeholder="Ej. 150">
-                </div>
-            </div>
+    <div class="grid-graficas">
+        <div class="card full-width">
+            <h3>Crecimiento de Seguidores</h3>
+            <div class="grafica-contenedor"><canvas id="chartSeguidores"></canvas></div>
+        </div>
+        
+        <div class="card">
+            <h3>Visualizaciones Totales</h3>
+            <div class="grafica-contenedor"><canvas id="chartVisualizaciones"></canvas></div>
+        </div>
 
-            <div class="grupo-form">
-                <label class="titulo-seccion">Visualizaciones Totales:</label>
-                <input type="number" id="visualizaciones" required placeholder="Ej. 1500000 (Sin comas ni letras)">
-            </div>
+        <div class="card">
+            <h3>Visitas al Perfil / Página</h3>
+            <div class="grafica-contenedor"><canvas id="chartVisitas"></canvas></div>
+        </div>
 
-            <div class="grupo-form" style="display: flex; gap: 15px;">
-                <div style="flex: 1;">
-                    <label class="titulo-seccion">Visitas a la Página:</label>
-                    <input type="number" id="visitas" required placeholder="Ej. 45000">
-                </div>
-                <div style="flex: 1;">
-                    <label class="titulo-seccion">Engagement (%):</label>
-                    <input type="number" step="0.01" id="engagement" required placeholder="Ej. 0.85">
-                </div>
-            </div>
+        <div class="card">
+            <h3>Cantidad de Publicaciones</h3>
+            <div class="grafica-contenedor"><canvas id="chartPublicaciones"></canvas></div>
+        </div>
 
-            <div class="botones-container">
-                <button type="submit" id="btnGuardar" class="btn-guardar">💾 Guardar Métricas</button>
-                <a href="dashboard-redes.html" class="btn-dashboard">📈 Ir al Dashboard Comparativo</a>
-            </div>
-        </form>
+        <div class="card">
+            <h3>Engagement Rate (%)</h3>
+            <div class="grafica-contenedor"><canvas id="chartEngagement"></canvas></div>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyACfn6C6_XqLDQI29f6uHUUwlCQkSCXNYk",
@@ -119,37 +106,106 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const form = document.getElementById('formRedes');
-        const btnGuardar = document.getElementById('btnGuardar');
-        const mensajeExito = document.getElementById('mensaje-exito');
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault(); 
-            btnGuardar.innerText = "Guardando...";
-            btnGuardar.disabled = true;
+        const datosHistoricos = [
+            { anio: "2023", mes: "Enero", seguidores: 33571, visualizaciones: 488500, visitas: 8119, publicaciones: 111, engagement: 0.67 },
+            { anio: "2023", mes: "Febrero", seguidores: 33833, visualizaciones: 767190, visitas: 7775, publicaciones: 107, engagement: 0.75 },
+            { anio: "2023", mes: "Marzo", seguidores: 36416, visualizaciones: 1330000, visitas: 53321, publicaciones: 230, engagement: 0.87 },
+            
+            { anio: "2024", mes: "Enero", seguidores: 41155, visualizaciones: 1230000, visitas: 31641, publicaciones: 186, engagement: 0.44 },
+            { anio: "2024", mes: "Febrero", seguidores: 41411, visualizaciones: 1160000, visitas: 38511, publicaciones: 202, engagement: 0.53 },
+            { anio: "2024", mes: "Marzo", seguidores: 42058, visualizaciones: 1330000, visitas: 53330, publicaciones: 230, engagement: 0.87 },
+            
+            { anio: "2025", mes: "Enero", seguidores: 37777, visualizaciones: 671390, visitas: 28822, publicaciones: 132, engagement: 0.48 },
+            { anio: "2025", mes: "Febrero", seguidores: 37890, visualizaciones: 896359, visitas: 60111, publicaciones: 127, engagement: 0.46 },
+            { anio: "2025", mes: "Marzo", seguidores: 47325, visualizaciones: 2870000, visitas: 98790, publicaciones: 200, engagement: 0.78 },
+            
+            { anio: "2026", mes: "Enero", seguidores: 54956, visualizaciones: 3110000, visitas: 41690, publicaciones: 136, engagement: 0.91 },
+            { anio: "2026", mes: "Febrero", seguidores: 55781, visualizaciones: 2180000, visitas: 38666, publicaciones: 145, engagement: 0.72 },
+            { anio: "2026", mes: "Marzo", seguidores: 56350, visualizaciones: 1730000, visitas: 47685, publicaciones: 159, engagement: 0.62 }
+        ];
 
-            try {
-                await addDoc(collection(db, "metricas_redes"), {
-                    anio: document.getElementById('anio').value,
-                    mes: document.getElementById('mes').value,
-                    seguidores: Number(document.getElementById('seguidores').value),
-                    visualizaciones: Number(document.getElementById('visualizaciones').value),
-                    visitas: Number(document.getElementById('visitas').value),
-                    publicaciones: Number(document.getElementById('publicaciones').value),
-                    engagement: Number(document.getElementById('engagement').value),
-                    fecha_registro: new Date()
-                });
+        let datosFirebase = [];
+        let graficas = {}; 
+        const mesesEjeX = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
-                mensajeExito.style.display = 'block';
-                form.reset();
-                setTimeout(() => mensajeExito.style.display = 'none', 3000);
-            } catch (error) {
-                alert("Error al guardar.");
-            } finally {
-                btnGuardar.innerText = "💾 Guardar Métricas";
-                btnGuardar.disabled = false;
-            }
+        onSnapshot(collection(db, "metricas_redes"), (snap) => {
+            datosFirebase = snap.docs.map(d => d.data());
+            actualizarGraficas();
         });
+
+        document.getElementById('anio1').addEventListener('change', actualizarGraficas);
+        document.getElementById('anio2').addEventListener('change', actualizarGraficas);
+
+        function obtenerDatosPorAnioYMetrica(anio, metrica, dataTotal) {
+            let datosDelAnio = dataTotal.filter(d => d.anio === anio);
+            return mesesEjeX.map(mes => {
+                let registro = datosDelAnio.find(d => d.mes === mes);
+                return registro ? registro[metrica] : null; 
+            });
+        }
+
+        function dibujarGrafica(idCanvas, titulo, metrica, dataTotal, a1, a2) {
+            const ctx = document.getElementById(idCanvas).getContext('2d');
+            
+            if (graficas[idCanvas]) graficas[idCanvas].destroy();
+
+            const datosA1 = obtenerDatosPorAnioYMetrica(a1, metrica, dataTotal);
+            const datosA2 = obtenerDatosPorAnioYMetrica(a2, metrica, dataTotal);
+
+            graficas[idCanvas] = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: mesesEjeX,
+                    datasets: [
+                        {
+                            label: `Año ${a1}`,
+                            data: datosA1,
+                            borderColor: '#172e59', 
+                            backgroundColor: 'rgba(23, 46, 89, 0.1)',
+                            borderWidth: 3,
+                            pointRadius: 5,
+                            tension: 0.3,
+                            fill: true,
+                            spanGaps: false
+                        },
+                        {
+                            label: `Año ${a2}`,
+                            data: datosA2,
+                            borderColor: '#158e45', 
+                            backgroundColor: 'rgba(21, 142, 69, 0.1)',
+                            borderWidth: 3,
+                            pointRadius: 5,
+                            tension: 0.3,
+                            fill: true,
+                            spanGaps: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top', labels: { font: { size: 14, weight: 'bold' } } } },
+                    scales: {
+                        y: { beginAtZero: false },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function actualizarGraficas() {
+            const a1 = document.getElementById('anio1').value;
+            const a2 = document.getElementById('anio2').value;
+            
+            const dataTotal = [...datosHistoricos, ...datosFirebase];
+
+            dibujarGrafica('chartSeguidores', 'Seguidores', 'seguidores', dataTotal, a1, a2);
+            dibujarGrafica('chartVisualizaciones', 'Visualizaciones', 'visualizaciones', dataTotal, a1, a2);
+            dibujarGrafica('chartVisitas', 'Visitas a la Página', 'visitas', dataTotal, a1, a2);
+            dibujarGrafica('chartPublicaciones', 'Publicaciones', 'publicaciones', dataTotal, a1, a2);
+            dibujarGrafica('chartEngagement', 'Engagement', 'engagement', dataTotal, a1, a2);
+        }
     </script>
 </body>
 </html>
