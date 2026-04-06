@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingreso de Métricas - Redes Sociales</title>
+    <style>
+        :root { --azul: #172e59; --verde: #158e45; --blanco: #ffffff; --fondo: #f0f4f8; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--fondo); margin: 0; padding: 20px; color: #333; display: flex; flex-direction: column; align-items: center; }
+        
+        .header { text-align: center; margin-bottom: 20px; }
+        .logo { max-width: 180px; margin-bottom: 10px; }
+        h1 { color: var(--azul); margin: 0; }
+        p { color: #666; margin-top: 5px; }
+
+        .formulario-card { background: var(--blanco); padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 100%; max-width: 600px; }
+        
+        .grupo-form { margin-bottom: 20px; }
+        label.titulo-seccion { display: block; font-weight: bold; margin-bottom: 8px; color: var(--azul); font-size: 0.95rem; border-bottom: 2px solid #e9ecef; padding-bottom: 5px; }
+        
+        select, input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box; font-family: inherit; }
+        select:focus, input:focus { outline: none; border-color: var(--verde); box-shadow: 0 0 5px rgba(21, 142, 69, 0.3); }
+
+        .botones-container { display: flex; flex-direction: column; gap: 15px; margin-top: 30px; }
+        .btn-guardar { background-color: var(--verde); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-guardar:hover { background-color: #117538; }
+        .btn-guardar:disabled { background-color: #95cfa9; cursor: not-allowed; }
+        
+        .btn-dashboard { background-color: var(--azul); color: white; text-align: center; text-decoration: none; padding: 15px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; transition: 0.3s; }
+        .btn-dashboard:hover { background-color: #102140; }
+
+        #mensaje-exito { display: none; background-color: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold; border: 1px solid #c3e6cb; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="logo.png" alt="COOSAJO" class="logo" onerror="this.style.display='none'">
+        <h1>Métricas de Redes Sociales</h1>
+        <p>Ingresa los datos mensuales para el análisis comparativo</p>
+    </div>
+
+    <div class="formulario-card">
+        <div id="mensaje-exito">✅ ¡Métricas guardadas con éxito!</div>
+        <form id="formRedes">
+            <div class="grupo-form" style="display: flex; gap: 15px;">
+                <div style="flex: 1;">
+                    <label class="titulo-seccion">Año:</label>
+                    <select id="anio" required>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026" selected>2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                        <option value="2029">2029</option>
+                        <option value="2030">2030</option>
+                    </select>
+                </div>
+                <div style="flex: 1;">
+                    <label class="titulo-seccion">Mes:</label>
+                    <select id="mes" required>
+                        <option value="" disabled selected>Elige...</option>
+                        <option value="Enero">Enero</option><option value="Febrero">Febrero</option>
+                        <option value="Marzo">Marzo</option><option value="Abril">Abril</option>
+                        <option value="Mayo">Mayo</option><option value="Junio">Junio</option>
+                        <option value="Julio">Julio</option><option value="Agosto">Agosto</option>
+                        <option value="Septiembre">Septiembre</option><option value="Octubre">Octubre</option>
+                        <option value="Noviembre">Noviembre</option><option value="Diciembre">Diciembre</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grupo-form" style="display: flex; gap: 15px;">
+                <div style="flex: 1;">
+                    <label class="titulo-seccion">Seguidores:</label>
+                    <input type="number" id="seguidores" required placeholder="Ej. 56000">
+                </div>
+                <div style="flex: 1;">
+                    <label class="titulo-seccion">Publicaciones:</label>
+                    <input type="number" id="publicaciones" required placeholder="Ej. 150">
+                </div>
+            </div>
+
+            <div class="grupo-form">
+                <label class="titulo-seccion">Visualizaciones Totales:</label>
+                <input type="number" id="visualizaciones" required placeholder="Ej. 1500000 (Sin comas ni letras)">
+            </div>
+
+            <div class="grupo-form" style="display: flex; gap: 15px;">
+                <div style="flex: 1;">
+                    <label class="titulo-seccion">Visitas a la Página:</label>
+                    <input type="number" id="visitas" required placeholder="Ej. 45000">
+                </div>
+                <div style="flex: 1;">
+                    <label class="titulo-seccion">Engagement (%):</label>
+                    <input type="number" step="0.01" id="engagement" required placeholder="Ej. 0.85">
+                </div>
+            </div>
+
+            <div class="botones-container">
+                <button type="submit" id="btnGuardar" class="btn-guardar">💾 Guardar Métricas</button>
+                <a href="dashboard-redes.html" class="btn-dashboard">📈 Ir al Dashboard Comparativo</a>
+            </div>
+        </form>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyACfn6C6_XqLDQI29f6uHUUwlCQkSCXNYk",
+            authDomain: "costos-comunicacion-digital.firebaseapp.com",
+            projectId: "costos-comunicacion-digital",
+            storageBucket: "costos-comunicacion-digital.firebasestorage.app",
+            messagingSenderId: "299496606379",
+            appId: "1:299496606379:web:a4d6609ff79eebff0c85ee"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const form = document.getElementById('formRedes');
+        const btnGuardar = document.getElementById('btnGuardar');
+        const mensajeExito = document.getElementById('mensaje-exito');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); 
+            btnGuardar.innerText = "Guardando...";
+            btnGuardar.disabled = true;
+
+            try {
+                await addDoc(collection(db, "metricas_redes"), {
+                    anio: document.getElementById('anio').value,
+                    mes: document.getElementById('mes').value,
+                    seguidores: Number(document.getElementById('seguidores').value),
+                    visualizaciones: Number(document.getElementById('visualizaciones').value),
+                    visitas: Number(document.getElementById('visitas').value),
+                    publicaciones: Number(document.getElementById('publicaciones').value),
+                    engagement: Number(document.getElementById('engagement').value),
+                    fecha_registro: new Date()
+                });
+
+                mensajeExito.style.display = 'block';
+                form.reset();
+                setTimeout(() => mensajeExito.style.display = 'none', 3000);
+            } catch (error) {
+                alert("Error al guardar.");
+            } finally {
+                btnGuardar.innerText = "💾 Guardar Métricas";
+                btnGuardar.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
